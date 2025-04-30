@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { MealsContext } from '../../MealsContext/index'; 
+import { MealsContext } from '../../MealsContext/index';
 import edit from '../../../images/edit.svg';
 import discount from '../../../images/discount.svg';
 import line from '../../../images/line.svg';
@@ -7,17 +7,20 @@ import './index.css';
 import Common from './common';
 
 const Aside = () => {
-  const { addedMeals } = useContext(MealsContext); 
+  const { addedMeals } = useContext(MealsContext);
 
   return (
-    <section className="aside w-full h-[100vh] flex flex-col justify-between bg-white relative">
+    <section className="aside w-[full] h-[100vh] flex flex-col justify-between bg-white relative">
       <div className="client w-full max-h-[80px] h-full p-3 flex flex-row justify-between">
         <span>
-          <h4 className="name text-[28px] font-medium">Ma'mirjon</h4>
+          <h4 className="name text-xl font-medium">Ma'mirjon</h4>
           <p className="text-[#A2A2A2] font-normal">Stol raqami: 7</p>
         </span>
-        <div className="edit w-[60px] h-[60px] bg-[#F7F7F7] rounded-full flex items-center justify-center cursor-pointer">
-          <img src={edit} alt="pencil image" />
+        <div className="edit w-[35px] h-[35px] xl:w-[60px] xl:h-[60px] bg-[#F7F7F7] rounded-full flex items-center justify-center cursor-pointer">
+          <img
+            className='w-5 h-5'
+            src={edit}
+            alt="pencil image" />
         </div>
       </div>
 
@@ -30,7 +33,7 @@ const Aside = () => {
             >
               <p>{meal.name}</p>
               <p>{meal.quantity}x</p>
-              <p>${meal.price}</p>
+              <p>${(meal.price * meal.quantity).toFixed(2)}</p>
             </div>
           ))
         ) : (
@@ -44,7 +47,7 @@ const Aside = () => {
       <div className="common">
         <Common />
         <div className="order py-3 px-5 flex flex-row justify-between">
-          <div className="promo relative bg-[#F7F7F7] w-[225px] h-[40px] rounded-full text-[16px] font-normal py-2 pl-3">
+          {/* <div className="promo relative bg-[#F7F7F7] w-[225px] h-[40px] rounded-full text-[16px] font-normal py-2 pl-3">
             <input className="outline-none" type="text" placeholder="Promokod" />
             <div className="absolute top-[5px] right-2 w-[30px] h-[30px] bg-white rounded-full flex items-center justify-center">
               <img
@@ -53,8 +56,8 @@ const Aside = () => {
                 alt="discount image"
               />
             </div>
-          </div>
-          <button className="pay-btn w-[210px] h-[40px] border rounded-full font-normal outline-none">
+          </div> */}
+          <button className="pay-btn w-[210px] m-auto h-[40px] border rounded-full font-normal outline-none">
             To'lov usuli
           </button>
         </div>

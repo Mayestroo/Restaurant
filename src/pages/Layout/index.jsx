@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './navbar';
 import Types from '../Types/all/index';
 import Search from './search';
@@ -8,7 +8,19 @@ import MealContainer from '../Meal/index';
 import { MealsProvider } from '../MealsContext/index'; 
 
 const Layout = () => {
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState(() => {
+    try {
+      const savedType = localStorage.getItem('selectedType');
+      return savedType ? JSON.parse(savedType) : null;
+    } catch (e) {
+      console.error('Error parsing localStorage selectedType:', e);
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('selectedType', JSON.stringify(selectedType));
+  }, [selectedType]);
 
   return (
     <MealsProvider>
