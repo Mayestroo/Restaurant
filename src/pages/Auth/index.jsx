@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ login: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,10 +25,9 @@ function LoginPage() {
         "http://localhost:5106/api/Login/token",
         formData
       );
-      // Handle successful login (e.g., save token, redirect)
       console.log("Login success:", response.data);
       localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
+      navigate("/dashboard"); // ✅ Now this will work
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {
