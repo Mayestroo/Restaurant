@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ login: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -9,7 +11,7 @@ function LoginPage() {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(), // Trim unnecessary spaces
     }));
   };
 
@@ -18,17 +20,29 @@ function LoginPage() {
     setLoading(true);
     setError("");
 
+    // Basic Validation
+    if (!formData.login || !formData.password) {
+      setError("Login and password are required.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:5106/api/Login/token",
-        formData
+        formData,
+        { headers: { "Content-Type": "application/json" } }
       );
-      // Handle successful login (e.g., save token, redirect)
+
+      if (!response.data.result?.access_token) {
+        throw new Error("Invalid credentials.");
+      }
+
       console.log("Login success:", response.data);
-      localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
+      localStorage.setItem("token", response.data.result.access_token);
+      navigate("/dashboard"); // ✅ Redirect user
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Invalid username or password.");
     } finally {
       setLoading(false);
     }
