@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { Trash2, Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState(false);  // Modal visibility state
+  const [userToRemove, setUserToRemove] = useState(null); // User to be removed
+  const navigate = useNavigate();
 
   const fetchUsers = () => {
-    console.log("Fetching users...");
     fetch(`http://localhost:5225/api/Dashboard/GetAllUsers?skip=0&take=100&t=${Date.now()}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched data:", data);
         const userArray = data.result?.data || [];
-        console.log("User array:", userArray);
-        if (!Array.isArray(userArray)) {
-          console.error("API did not return an array:", userArray);
-          setUsers([]);
-          return;
-        }
-        setUsers(userArray);
+        setUsers(Array.isArray(userArray) ? userArray : []);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -25,19 +22,13 @@ const UserList = () => {
   };
 
   const removeUser = (username) => {
-    console.log("Sending DELETE request for username:", username);
-    fetch(
-      `http://localhost:5225/api/Dashboard/RemoveUser?username=${username}`,
-      {
-        method: "DELETE",
-      }
-    )
+    fetch(`http://localhost:5225/api/Dashboard/RemoveUser?username=${username}`, {
+      method: "DELETE",
+    })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to delete user: ${res.statusText}`);
-        }
-        console.log("User deleted successfully, fetching updated list...");
-        return fetchUsers();
+        if (!res.ok) throw new Error(`Failed to delete user: ${res.statusText}`);
+        fetchUsers();
+        setShowModal(false); // Close the modal after successful deletion
       })
       .catch((error) => {
         console.error("Error removing user:", error);
@@ -45,36 +36,82 @@ const UserList = () => {
       });
   };
 
+  const handleRemoveClick = (username) => {
+    setUserToRemove(username); // Store the user to be removed
+    setShowModal(true); // Show the modal
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  console.log("Users state:", users);
-
   return (
     <div className="p-4">
-      <h2>All Users</h2>
+      <h2 className="text-2xl font-semibold mb-4">All Users</h2>
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
-        <ul>
-          {users.map((user) => (
-            <li
-              key={user.username}
-              className="flex justify-between items-center"
-            >
-              <span>{user.username || "No username available"}</span>
+        <div className="overflow-x-auto rounded shadow">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Username</th>
+                <th className="px-6 py-3 text-right text-sm font-medium text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user, idx) => (
+                <tr key={user.username || idx} className="border-t hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {user.username || "No username available"}
+                  </td>
+                  <td className="px-6 py-4 text-right space-x-4">
+                    <button
+                      aria-label="Edit user"
+                      onClick={() => navigate(`/dashboard/edit/${user.username}`)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      aria-label="Remove user"
+                      onClick={() => handleRemoveClick(user.username)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Modal for confirmation */}
+      {showModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900/50">
+          <div className="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full">
+            <h3 className="text-xl font-semibold mb-4">Are you sure you want to delete this user?</h3>
+            <p className="mb-6">This action cannot be undone.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowModal(false)} // Close the modal without doing anything
+                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
               <button
                 onClick={() => {
-                  console.log("Removing user:", user.username);
-                  removeUser(user.username);
+                  removeUser(userToRemove); // Perform the deletion
                 }}
+                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
               >
-                Remove
+                Delete
               </button>
-            </li>
-          ))}
-        </ul>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
