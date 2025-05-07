@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { MealsContext } from '../MealsContext/index'; 
+import React, { useEffect, useState } from 'react';
 import getMeal from './mealcrud/index';
 import Meal from './meal';
 
-const MealContainer = ({ selectedType }) => {
+const MealContainer = ({ selectedType, searchQuery }) => {
   const [meals, setMeals] = useState([]);
+  const [filteredMeals, setFilteredMeals] = useState([]);
   const token = localStorage.getItem('access_token');
   const [error, setError] = useState(null);
-  const { addMeal } = useContext(MealsContext);
 
   useEffect(() => {
     if (selectedType) {
@@ -16,12 +15,24 @@ const MealContainer = ({ selectedType }) => {
     }
   }, [selectedType, token]);
 
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredMeals(meals);
+    } else {
+      const lowerQuery = searchQuery.toLowerCase();
+      const filtered = meals.filter((meal) =>
+        meal.name.toLowerCase().includes(lowerQuery)
+      );
+      setFilteredMeals(filtered);
+    }
+  }, [meals, searchQuery]);
+
   return (
     <div>
       {error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <Meal meals={meals} addMeal={addMeal} />
+        <Meal meals={filteredMeals} />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import Search from './search';
 import { Outlet } from 'react-router-dom';
 import Aside from './aside';
 import MealContainer from '../Meal/index';
-import { MealsProvider } from '../MealsContext/index'; 
+import { MealsProvider } from '../MealsContext/index';
 
 const Layout = () => {
   const [selectedType, setSelectedType] = useState(() => {
@@ -17,10 +17,15 @@ const Layout = () => {
       return null;
     }
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     localStorage.setItem('selectedType', JSON.stringify(selectedType));
   }, [selectedType]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
 
   return (
     <MealsProvider>
@@ -28,8 +33,10 @@ const Layout = () => {
         <div className="layout-in w-full lg:w-[65%] bg-[#9c9b9b] flex flex-col gap-[15px] p-5">
           <Navbar />
           <Types setSelectedType={setSelectedType} />
-          <Search />
-          {selectedType && <MealContainer selectedType={selectedType} />}
+          <Search onSearch={handleSearch} />
+          {selectedType && (
+            <MealContainer selectedType={selectedType} searchQuery={searchQuery} />
+          )}
         </div>
         <main>
           <Outlet />
