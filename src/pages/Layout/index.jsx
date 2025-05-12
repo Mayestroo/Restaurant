@@ -30,7 +30,7 @@ const Layout = () => {
   return (
     <MealsProvider>
       <section className="layout flex flex-col lg:flex-row w-full h-full">
-        <div className="layout-in w-full lg:w-[65%] bg-[#9c9b9b] flex flex-col gap-[15px] p-5">
+        <div className="layout-in w-full lg:w-[65%] bg-[#F7F7F7] flex flex-col gap-[15px] p-5">
           <Navbar />
           <Types setSelectedType={setSelectedType} />
           <Search onSearch={handleSearch} />

@@ -13,12 +13,10 @@ const AddUserForm = ({ onUserAdded }) => {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    // Fetch roles
     fetch('http://localhost:5225/api/Dashboard/AllRoles')
       .then(res => res.json())
       .then(data => setRoles(data.result?.data || []));
 
-    // Fetch permissions
     fetch('http://localhost:5225/api/Dashboard/GetAllPermissions?skip=0&take=10')
       .then(res => res.json())
       .then(data => {

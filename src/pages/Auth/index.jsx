@@ -11,7 +11,7 @@ function LoginPage() {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value.trim(), // Trim unnecessary spaces
+      [e.target.name]: e.target.value.trim(), 
     }));
   };
 
@@ -20,7 +20,6 @@ function LoginPage() {
     setLoading(true);
     setError("");
 
-    // Basic Validation
     if (!formData.login || !formData.password) {
       setError("Login and password are required.");
       setLoading(false);
@@ -40,7 +39,7 @@ function LoginPage() {
 
       console.log("Login success:", response.data);
       localStorage.setItem("token", response.data.result.access_token);
-      navigate("/dashboard"); // ✅ Redirect user
+      navigate("/dashboard"); 
     } catch (err) {
       setError(err.response?.data?.message || "Invalid username or password.");
     } finally {

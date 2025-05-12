@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
-  const [showModal, setShowModal] = useState(false);  // Modal visibility state
-  const [userToRemove, setUserToRemove] = useState(null); // User to be removed
+  const [showModal, setShowModal] = useState(false);
+  const [userToRemove, setUserToRemove] = useState(null); 
   const navigate = useNavigate();
 
   const fetchUsers = () => {
@@ -28,7 +28,7 @@ const UserList = () => {
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to delete user: ${res.statusText}`);
         fetchUsers();
-        setShowModal(false); // Close the modal after successful deletion
+        setShowModal(false); 
       })
       .catch((error) => {
         console.error("Error removing user:", error);
@@ -37,8 +37,8 @@ const UserList = () => {
   };
 
   const handleRemoveClick = (username) => {
-    setUserToRemove(username); // Store the user to be removed
-    setShowModal(true); // Show the modal
+    setUserToRemove(username); 
+    setShowModal(true); 
   };
 
   useEffect(() => {
@@ -88,7 +88,6 @@ const UserList = () => {
         </div>
       )}
 
-      {/* Modal for confirmation */}
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-900/50">
           <div className="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full">
@@ -96,14 +95,14 @@ const UserList = () => {
             <p className="mb-6">This action cannot be undone.</p>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => setShowModal(false)} // Close the modal without doing anything
+                onClick={() => setShowModal(false)} 
                 className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
-                  removeUser(userToRemove); // Perform the deletion
+                  removeUser(userToRemove); 
                 }}
                 className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
               >
