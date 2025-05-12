@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import UserList from './UserList';
 import AddUserForm from './AddUser';
-import Sidebar from './Sidebar';
+import Sidebar from './SideBar/index';
 import EditUser from './EditUser';
 
 const Dashboard = () => {

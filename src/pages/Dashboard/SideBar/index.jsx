@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, X } from 'lucide-react'; // Optional icons, install via `lucide-react`
+import { Menu, X } from 'lucide-react'; 
 
 const Sidebar = ({ isOpen, toggleSidebar, onMenuSelect }) => {
   return (

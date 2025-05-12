@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import LoginPage from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './pages/PrivateRoute'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           }
         />
       </Routes>
+      <ToastContainer position='top-center' autoClose={3000} />
     </BrowserRouter>
   )
 }

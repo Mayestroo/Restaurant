@@ -8,14 +8,13 @@ const Common = () => {
   const totalMealCount = addedMeals.reduce((sum, meal) => sum + (meal.quantity || 0), 0);
 
   const totalPrice = addedMeals
-    .reduce((sum, meal) => sum + Number(meal.price || 0) * (meal.quantity || 0), 0)
-    .toFixed(2);
+    .reduce((sum, meal) => sum + Number(meal.price || 0) * (meal.quantity || 0), 0);
 
   return (
     <div className="common w-full h-auto p-5 flex flex-col gap-4 rounded-t-2xl">
       <div className="all-meals flex flex-row justify-between items-center text-[18px] font-medium">
         <p>Umumiy (ovqatlar, {totalMealCount} ta):</p>
-        <p>${totalPrice}</p>
+        <p>{totalPrice.toLocaleString()} so'm</p>
       </div>
 
       <div className="fee text-[#9F9F9F] flex flex-row justify-between items-center">
@@ -27,7 +26,7 @@ const Common = () => {
 
       <div className="bill text-[18px] font-bold flex flex-row justify-between items-center">
         <p>UMUMIY HISOB:</p>
-        <p>${totalPrice}</p>
+        <p>{totalPrice.toLocaleString()} so'm</p>
       </div>
     </div>
   );
