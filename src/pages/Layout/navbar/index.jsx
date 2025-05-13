@@ -1,15 +1,19 @@
-import React from 'react'
-import five from '../../../images/five.avif'
-import date from '../../../images/date.svg'
-import bell from '../../../images/bell.svg'
+import React, { useState } from 'react';
+import five from '../../../images/five.avif';
+import date from '../../../images/date.svg';
+import bell from '../../../images/bell.svg';
+import Basket from '../basket';
+import Aside from '../aside';
 
 const Navbar = () => {
-    const days = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan']
+    const days = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan'];
     const months = [
         'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
         'Iyul', 'Avgust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'
-    ]
-    const today = new Date()
+    ];
+    const today = new Date();
+
+    const [showModal, setShowModal] = useState(false);
 
     return (
         <section className='navbar flex flex-col gap-3 items-center min-[735px]:flex-row flex-wrap md:flex-row md:justify-between'>
@@ -17,8 +21,8 @@ const Navbar = () => {
                 <img
                     src={five}
                     alt="greeting image"
-                    className='greeting-img w-[40px] h-[40px] xl:w-[60px] xl:h-[60px] rounded-full border-3 md:border-4 border-white' />
-
+                    className='greeting-img w-[40px] h-[40px] xl:w-[60px] xl:h-[60px] rounded-full border-3 md:border-4 border-white'
+                />
                 <h2 className='nav-text font-medium text-xl xl:text-[28px]'>Assalamu alaykum!</h2>
             </div>
 
@@ -27,7 +31,8 @@ const Navbar = () => {
                     <img
                         className='w-[20px] h-[20px] xl:w-[30px] xl:h-[30px]'
                         src={date}
-                        alt="date image" />
+                        alt="date image"
+                    />
                 </span>
 
                 <span className='flex flex-row gap-1 font-normal text-base xl:text-xl'>
@@ -42,15 +47,23 @@ const Navbar = () => {
                     <img
                         className='w-[20px] h-[20px] xl:w-[30px] xl:h-[30px]'
                         src={bell}
-                        alt="bell image" />
+                        alt="bell image"
+                    />
                 </span>
-
                 <span className='waiter-text text-base xl:text-xl'>
                     <p>Ofitsant chaqirish</p>
                 </span>
             </button>
-        </section>
-    )
-}
 
-export default Navbar
+            <Basket setShowModal={setShowModal} />
+
+            <button className='user-account w-[50px] h-[50px] bg-white flex justify-center items-center rounded-full p-1 cursor-pointer'>
+                <i className="fa-solid fa-circle-user text-[37px] text-green-400"></i>
+            </button>
+
+            <Aside showModal={showModal} setShowModal={setShowModal} />
+        </section>
+    );
+};
+
+export default Navbar;

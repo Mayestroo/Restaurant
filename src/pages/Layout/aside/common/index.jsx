@@ -19,7 +19,7 @@ const Common = () => {
 
       <div className="fee text-[#9F9F9F] flex flex-row justify-between items-center">
         <p>Xizmat haqqi:</p>
-        <p>0.00</p>
+        <p>0</p>
       </div>
 
       <img src={line} alt="line" />

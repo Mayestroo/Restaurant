@@ -1,15 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { MealsContext } from "../MealsContext/index";
 import MealModal from "./MealModal/MealModal";
 
 const Meal = ({ meals }) => {
   const { addedMeals, addMeal, removeMeal } = useContext(MealsContext);
   const [selectedMeal, setSelectedMeal] = useState(null);
-
-  // Close modal on page reload
-  useEffect(() => {
-    setSelectedMeal(null);
-  }, []);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -18,7 +13,11 @@ const Meal = ({ meals }) => {
         const quantity = mealInCart ? mealInCart.quantity : 0;
 
         return (
-          <div key={meal.id} className="flex flex-col p-4 bg-white shadow-lg rounded-lg transition hover:shadow-xl cursor-pointer" onClick={() => setSelectedMeal(meal)}>
+          <div
+            key={meal.id}
+            className="flex flex-col p-4 bg-white shadow-lg rounded-lg transition hover:shadow-xl cursor-pointer"
+            onClick={() => setSelectedMeal(meal)}
+          >
             <img src={meal?.image} alt={meal?.name} className="w-full h-40 object-cover rounded-md" />
             <div className="flex flex-col flex-1 justify-between mt-4">
               <p className="text-lg font-semibold">{meal?.name}</p>
@@ -27,7 +26,10 @@ const Meal = ({ meals }) => {
 
               <div className="mt-4" onClick={(e) => e.stopPropagation()}>
                 {quantity === 0 ? (
-                  <button className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition" onClick={() => addMeal({ id: meal?.id, name: meal?.name, price: meal?.price, quantity: 1 })}>
+                  <button
+                    className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                    onClick={() => addMeal({ id: meal?.id, name: meal?.name, price: meal?.price, quantity: 1 })}
+                  >
                     Qo'shish
                   </button>
                 ) : (
@@ -50,7 +52,7 @@ const Meal = ({ meals }) => {
         <MealModal
           meal={selectedMeal}
           onClose={() => setSelectedMeal(null)}
-          addMeal={(meal) => addMeal(meal)}  // Ensure the function is correctly passed
+          addMeal={(meal) => addMeal(meal)}
           removeMeal={(id) => removeMeal(id)}
           quantity={addedMeals.find((m) => m?.id === selectedMeal?.id)?.quantity || 0}
         />

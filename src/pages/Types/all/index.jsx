@@ -36,7 +36,7 @@ const Types = ({ setSelectedType }) => {
   const allCards = [hammasiCard, ...datas];
 
   return (
-    <div className='flex flex-row gap-2'>
+    <div className='flex flex-row gap-2 '>
       {allCards.map((data, index) => (
         <Link
           onClick={() => handleItemClick(data)}
