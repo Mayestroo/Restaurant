@@ -1,82 +1,96 @@
-import React, { useContext, useState } from 'react';
-import { MealsContext } from '../../MealsContext/index';
-import edit from '../../../images/edit.svg';
-import discount from '../../../images/discount.svg';
-import line from '../../../images/line.svg';
-import './index.css';
-import Common from './common';
-import { getOrder } from '../../Order/index'; 
+import React, { useContext, useState } from "react";
+import { MealsContext } from "../../MealsContext/index";
+import line from "../../../images/line.svg";
+import "./index.css";
+import { getOrder } from "../../Order/index";
 
-const Aside = () => {
+const Aside = ({ showModal, setShowModal }) => {
+  if (!showModal) return null;
   const { addedMeals, clearData } = useContext(MealsContext);
   const [error, setError] = useState(null);
   const [datas, setDatas] = useState(null);
 
+  const totalAmount = addedMeals.reduce(
+    (sum, meal) => sum + Number(meal.price || 0) * (meal.quantity || 0),
+    0
+  );
+
+  const serviceFee = 0;
+  const grandTotal = totalAmount + serviceFee;
+
   const sendOrderToBackend = async () => {
     const orderData = {
-      Items: addedMeals.map(meal => ({
+      Items: addedMeals.map((meal) => ({
         name: meal.name,
         price: Number(meal.price || 0),
         quantity: meal.quantity || 0,
-        total: Number(meal.price || 0) * (meal.quantity || 0)
+        total: Number(meal.price || 0) * (meal.quantity || 0),
       })),
-      totalAmount: addedMeals.reduce((sum, meal) => sum + Number(meal.price || 0) * (meal.quantity || 0), 0),
-      client: { name: "Ma'mirjon", tableNumber: 7 }
+      totalAmount,
+      client: { name: "Ma'mirjon", tableNumber: 7 },
     };
 
-    const token = 'your-auth-token-here';
+    const token = "your-auth-token-here";
 
     await getOrder(token, orderData, setDatas, setError, clearData);
   };
 
   return (
-    <section className="aside w-[full] h-[100vh] flex flex-col justify-between bg-white relative">
-      <div className="client w-full max-h-[80px] h-full p-3 flex flex-row justify-between">
-        <span>
-          <h4 className="name text-xl font-medium">Ma'mirjon</h4>
-          <p className="text-[#A2A2A2] font-normal">Stol raqami: 7</p>
-        </span>
-        <div className="edit w-[35px] h-[35px] xl:w-[60px] xl:h-[60px] bg-[#F7F7F7] rounded-full flex items-center justify-center cursor-pointer">
-          <img className='w-5 h-5' src={edit} alt="pencil image" />
-        </div>
-      </div>
+    <>
+      {showModal && (
+        <div className="fixed inset-0 flex z-[99] items-center justify-center bg-[#5D7FC1]/50 bg-opacity-50">
+          <div className="aside-container w-full max-w-[400px] h-auto flex flex-col bg-white shadow-lg rounded-lg p-5 relative">
 
-      <div className="order-list text-center text-[#8A8A8A] flex flex-col gap-5 pt-5">
-        {addedMeals && addedMeals.length > 0 ? (
-          addedMeals.map((meal, index) => (
-            <div
-              key={index}
-              className="added-meal flex justify-between px-4 py-2 bg-gray-100 rounded-md"
+            <button
+              className="absolute top-2 right-3 font-bold text-xl"
+              onClick={() => setShowModal(false)}
             >
-              <p>{meal.name}</p>
-              <p>{meal.quantity}x</p>
-              <p>{(meal.price * meal.quantity).toLocaleString()} so'm</p>
-            </div>
-          ))
-        ) : (
-          <>
-            <p>Hozircha hech narsa yo‘q</p>
-            <img src={line} alt="line image" />
-          </>
-        )}
-      </div>
+              <i className="fa-solid fa-x"></i>
+            </button>
 
-      <div className="common">
-        <Common addedMeals={addedMeals} /> 
-        {error && <p className="text-red-500">{error}</p>}
-        <div className="order py-3 px-5 flex flex-row justify-between">
-          <button className="pay-btn w-[210px] m-auto h-[40px] border rounded-full font-normal outline-none">
-            To'lov usuli
-          </button>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">Savatcha</h2>
+
+            <div className="order-list text-[#8A8A8A] flex flex-col gap-3">
+              {addedMeals && addedMeals.length > 0 ? (
+                addedMeals.map((meal, index) => (
+                  <div key={index} className="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
+                    <div className="flex flex-col">
+                      <p className="font-semibold text-lg">{meal.name}</p>
+                      <p className="text-sm text-gray-600">{meal.quantity} x {(meal.price).toLocaleString()} so'm</p>
+                    </div>
+                    <p className="font-medium text-lg">{(meal.price * meal.quantity).toLocaleString()} so'm</p>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-600">
+                  <p>Hozircha hech narsa yo‘q</p>
+                  <img src={line} alt="line image" className="mx-auto mt-2" />
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between items-center border-t pt-3 mt-3">
+              <p className="text-gray-700">Servis narxi:</p>
+              <p className="font-medium">{serviceFee.toLocaleString()} so'm</p>
+            </div>
+
+            <div className="flex justify-between items-center bg-green-400 text-white font-bold text-lg p-3 rounded-lg mt-4">
+              <p>Jami:</p>
+              <p>{grandTotal.toLocaleString()} so'm</p>
+            </div>
+
+            {error && <p className="text-red-500 text-center mt-3">{error}</p>}
+
+            <button
+              className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition"
+              onClick={sendOrderToBackend}
+            >
+              Buyurtma qilish
+            </button>
+          </div>
         </div>
-        <button
-          className="order-btn w-full h-[60px] bg-[#2C72FE] font-normal text-[28px] text-white"
-          onClick={sendOrderToBackend}
-        >
-          Buyurtma qilish
-        </button>
-      </div>
-    </section>
+      )}
+    </>
   );
 };
 
