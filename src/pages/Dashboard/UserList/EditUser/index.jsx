@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditUser = ({ onSave }) => {
-  const { username } = useParams();
+  const { id } = useParams(); 
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     userName: "",
     password: "",
     role: "",
-    permissions: []
+    permissions: [],
   });
   const [roleOptions, setRoleOptions] = useState([]);
   const [permissionOptions, setPermissionOptions] = useState([]);
@@ -16,16 +17,18 @@ const EditUser = ({ onSave }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!id) return;
+
+    setLoading(true);
+
     const fetchUserDetails = async () => {
-      if (!username) return;
-
-      setLoading(true);
-
       try {
         const [rolesRes, permsRes, userRes] = await Promise.all([
           fetch("http://localhost:5225/api/Dashboard/AllRoles"),
-          fetch("http://localhost:5225/api/Dashboard/GetAllPermissions?skip=0&take=10"),
-          fetch(`http://localhost:5225/api/Dashboard/GetUserById?username=${username}`)
+          fetch(
+            `http://localhost:5225/api/Dashboard/GetAllPermissions?userId=${id}&skip=0&take=100`
+          ),
+          fetch(`http://localhost:5225/api/Dashboard/GetUserById?userId=${id}`),
         ]);
 
         const rolesData = await rolesRes.json();
@@ -36,15 +39,28 @@ const EditUser = ({ onSave }) => {
         console.log("Available Roles:", rolesData.result?.data);
         console.log("Available Permissions:", permsData.result?.data);
 
-        setRoleOptions(rolesData.result?.data || []);
-        setPermissionOptions(permsData.result?.data || []);
+        const roles = rolesData.result?.data || [];
+        const permissions = permsData.result?.data || [];
 
-        setFormData({
-          userName: userData.result?.userName || username,
-          password: "",
-          role: userData.result?.role || (rolesData.result?.data.find(r => r.id === userData.result?.role)?.id || ""),
-          permissions: Array.isArray(userData.result?.permissions) ? userData.result.permissions.map(perm => perm.id) : []
-        });
+        setRoleOptions(roles);
+        setPermissionOptions(permissions);
+
+        if (userData.result) {
+          const selectedRole = roles.find(
+            (role) => role.name === userData.result.name
+          );
+
+          const userPermissions = Array.isArray(userData.result.permissions)
+            ? userData.result.permissions
+            : [];
+
+          setFormData({
+            userName: userData.result.username || "",
+            password: "",
+            role: selectedRole ? selectedRole.id : "",
+            permissions: userPermissions,
+          });
+        }
 
         setLoading(false);
       } catch (error) {
@@ -54,39 +70,50 @@ const EditUser = ({ onSave }) => {
     };
 
     fetchUserDetails();
-  }, [username]);
+  }, [id]);
 
-  const handlePermissionChange = (permId) => {
+  const handlePermissionChange = (permCode) => {
     setFormData((prev) => ({
       ...prev,
-      permissions: prev.permissions.includes(permId)
-        ? prev.permissions.filter((p) => p !== permId)
-        : [...prev.permissions, permId]
+      permissions: prev.permissions.includes(permCode)
+        ? prev.permissions.filter((p) => p !== permCode)
+        : [...prev.permissions, permCode],
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        userName: formData.userName,
+        password: formData.password || undefined,
+        role: parseInt(formData.role),
+        permissions: formData.permissions,
+      };
+
       const res = await fetch("http://localhost:5225/api/Dashboard/UpdateUser", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Failed to update user");
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to update user: ${errorText}`);
+      }
 
       onSave();
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     }
   };
 
-  if (!username) return null;
+  if (!id) return null;
 
   return (
     <div className="mt-6 p-6 bg-gray-100 rounded-lg shadow">
-      <h3 className="text-xl font-semibold mb-4">Edit User: {username}</h3>
+      <h3 className="text-xl font-semibold mb-4">Edit User: {formData.userName}</h3>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -117,10 +144,11 @@ const EditUser = ({ onSave }) => {
             <label className="block text-sm font-medium text-gray-700">Role</label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
               required
             >
+              <option value="">Select a role</option>
               {roleOptions.map((role) => (
                 <option key={role.id} value={role.id}>
                   {role.name}
@@ -135,9 +163,9 @@ const EditUser = ({ onSave }) => {
                 <div key={perm.id} className="flex items-center">
                   <input
                     type="checkbox"
-                    value={perm.id}
-                    checked={formData.permissions.includes(perm.id)}
-                    onChange={() => handlePermissionChange(perm.id)}
+                    value={perm.code}
+                    checked={formData.permissions.includes(perm.code)}
+                    onChange={() => handlePermissionChange(perm.code)}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
                   <label className="ml-2 text-sm text-gray-700">{perm.fullName}</label>
@@ -148,7 +176,7 @@ const EditUser = ({ onSave }) => {
           <div className="flex justify-end space-x-2">
             <button
               type="button"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate("/dashboard")}
               className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
             >
               Cancel
