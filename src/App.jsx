@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import LoginPage from './pages/Auth'
 import Dashboard from './pages/Dashboard'
-import PrivateRoute from './pages/PrivateRoute'
+import PrivateRoute from './pages/Dashboard/PrivateRoute'
 import { ToastContainer } from 'react-toastify'
 
 const App = () => {

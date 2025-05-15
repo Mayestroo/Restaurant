@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import { MealsContext } from "../../MealsContext/index";
+import { MealsContext } from "../../Layout/MealsContext";
 import line from "../../../images/line.svg";
 import "./index.css";
-import { getOrder } from "../../Order/index";
+import { getOrder } from "../../Layout/Order";
 
 const Aside = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
@@ -12,21 +12,24 @@ const Aside = ({ showModal, setShowModal }) => {
 
   const totalAmount = addedMeals.reduce(
     (sum, meal) => sum + Number(meal.price || 0) * (meal.quantity || 0),
-    0
+    0 
   );
 
+  const tableId = 1
   const serviceFee = 0;
   const grandTotal = totalAmount + serviceFee;
 
   const sendOrderToBackend = async () => {
     const orderData = {
       Items: addedMeals.map((meal) => ({
+        menuItemId : meal.id,
         name: meal.name,
         price: Number(meal.price || 0),
         quantity: meal.quantity || 0,
         total: Number(meal.price || 0) * (meal.quantity || 0),
       })),
       totalAmount,
+      tableId,
       client: { name: "Ma'mirjon", tableNumber: 7 },
     };
 

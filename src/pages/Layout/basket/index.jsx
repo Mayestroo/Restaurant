@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { MealsContext } from "../../MealsContext/index";
+import { MealsContext } from "../../Layout/MealsContext";
 
 const Basket = ({ setShowModal }) => {
     const { addedMeals } = useContext(MealsContext);

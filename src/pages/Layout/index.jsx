@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './navbar';
-import Types from '../Types/all/index';
+import Types from '../Layout/Types/all';
 import Search from './search';
 import { Outlet } from 'react-router-dom';
 import Aside from './aside';
-import MealContainer from '../Meal/index';
-import { MealsProvider } from '../MealsContext/index';
+import MealContainer from '../Layout/Meal/index';
+import { MealsProvider } from '../Layout/MealsContext';
 
 const Layout = () => {
   const [selectedType, setSelectedType] = useState(() => {
