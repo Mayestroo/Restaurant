@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useNotification } from "../../../../context/NotificationContext";
 
 const AddMeal = () => {
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -11,54 +14,88 @@ const AddMeal = () => {
     imageUrl: "",
     description: "",
   });
-
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Load all categories
-    fetch("http://localhost:5063/api/CategoryControlller/AllCategories")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.result) setCategories(data.result);
-      })
-      .catch((err) => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://192.168.1.245:5063/api/CategoryControlller/AllCategories"
+        );
+        if (response.data.result && Array.isArray(response.data.result.data)) {
+          setCategories(response.data.result.data);
+        } else {
+          throw new Error("Categories data is not an array");
+        }
+      } catch (err) {
         console.error("Failed to load categories:", err);
-      });
-  }, []);
+        setError("Failed to load categories");
+        addNotification("Failed to load categories", "error");
+      }
+    };
+    fetchCategories();
+  }, [addNotification]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          imageUrl: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const res = await fetch("http://localhost:5063/api/Meal/AddMeal", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          price: parseFloat(formData.price),
-          quantity: parseInt(formData.quantity),
-          categoryId: parseInt(formData.categoryId),
-          imageUrl: formData.imageUrl || null,
-          description: formData.description || "",
-        }),
-      });
+      const price = parseFloat(formData.price);
+      const quantity = parseInt(formData.quantity);
+      const categoryId = parseInt(formData.categoryId);
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text);
+      if (isNaN(price) || isNaN(quantity) || isNaN(categoryId)) {
+        throw new Error("Please enter valid numbers for price, quantity, and category");
       }
 
-      // Success
-      navigate("/meals"); // or '/dashboard', depending on your routing
+      const response = await axios.post(
+        "http://192.168.1.245:5063/api/Meal/AddMeal",
+        {
+          name: formData.name,
+          price,
+          quantity,
+          categoryId,
+          imageUrl: formData.imageUrl || "",
+          description: formData.description || "",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        addNotification("Meal added successfully", "success");
+        navigate("/dashboard/meals");
+      }
     } catch (err) {
-      setError("Failed to add meal: " + err.message);
+      const errorMessage = err.response?.data?.message || err.message;
+      setError(`Failed to add meal: ${errorMessage}`);
+      addNotification(`Failed to add meal: ${errorMessage}`, "error");
     }
   };
 
@@ -95,11 +132,9 @@ const AddMeal = () => {
           required
         />
         <input
-          type="text"
+          type="file"
           name="imageUrl"
-          placeholder="Image URL (optional)"
-          value={formData.imageUrl}
-          onChange={handleChange}
+          onChange={handleImageChange}
           className="w-full border p-2 rounded"
         />
         <textarea
@@ -117,12 +152,11 @@ const AddMeal = () => {
           required
         >
           <option value="">Select Category</option>
-          {Array.isArray(categories) &&
-            categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id.toString()}>
+              {cat.name}
+            </option>
+          ))}
         </select>
         <div className="flex justify-end">
           <button
