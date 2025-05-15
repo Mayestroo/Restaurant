@@ -35,15 +35,13 @@ const Types = ({ setSelectedType }) => {
 
   const settings = {
     infinite: false,
-    slidesToScroll: 1,
-    arrows: false,
-    centerMode: false,
-    slidesToShow: 8,
-    swipeToSlide: true, 
-    draggable: true, 
+    swipeToSlide: true,
+    draggable: true,
     accessibility: true,
     slidesToShow: 8,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    cssEase: "ease-in-out",
+    lazyLoad: true
   };
 
   return (

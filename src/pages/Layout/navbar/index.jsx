@@ -4,6 +4,7 @@ import date from '../../../images/date.svg';
 import bell from '../../../images/bell.svg';
 import Basket from '../basket';
 import Aside from '../aside';
+import Account from '../account';
 
 const Navbar = () => {
     const days = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan'];
@@ -57,9 +58,7 @@ const Navbar = () => {
 
             <Basket setShowModal={setShowModal} />
 
-            <button className='user-account w-[50px] h-[50px] bg-white flex justify-center items-center rounded-full p-1 cursor-pointer'>
-                <i className="fa-solid fa-circle-user text-[37px] text-green-400"></i>
-            </button>
+            <Account />
 
             <Aside showModal={showModal} setShowModal={setShowModal} />
         </section>
