@@ -1,37 +1,40 @@
 import React from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Users, Folder, Utensils } from "lucide-react";
 
 const Sidebar = ({ isOpen, toggleSidebar, onMenuSelect }) => {
   return (
     <div
-      className={`bg-gray-800 text-white p-4 transition-all duration-300 ${
-        isOpen ? "w-1/5" : "w-16"
-      }`}
+      className={`bg-gray-900 text-white p-6 transition-all duration-500 ease-in-out shadow-lg ${
+        isOpen ? "w-64" : "w-20"
+      } flex flex-col  h-screen`}
     >
-      <button onClick={toggleSidebar} className="mb-4">
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+      <button 
+        onClick={toggleSidebar} 
+        className="mb-6 text-gray-300 hover:text-white transition"
+      >
+        {isOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
       {isOpen && (
         <>
-          <h1 className="text-xl mb-4">Dashboard</h1>
-          <ul>
+          <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
+          <ul className="space-y-4">
             <li
-              className="cursor-pointer mb-2"
+              className="cursor-pointer flex items-center gap-3 text-lg hover:text-gray-400 transition"
               onClick={() => onMenuSelect("users")}
             >
-              Users
+              <Users size={20} /> Users
             </li>
             <li
-              className="cursor-pointer mb-2"
+              className="cursor-pointer flex items-center gap-3 text-lg hover:text-gray-400 transition"
               onClick={() => onMenuSelect("category")}
             >
-              Category
+              <Folder size={20} /> Category
             </li>
             <li
-              className="cursor-pointer mb-2"
+              className="cursor-pointer flex items-center gap-3 text-lg hover:text-gray-400 transition"
               onClick={() => onMenuSelect("meals")}
             >
-              Meals
+              <Utensils size={20} /> Meals
             </li>
           </ul>
         </>

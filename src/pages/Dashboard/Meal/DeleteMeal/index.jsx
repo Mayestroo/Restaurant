@@ -1,50 +1,132 @@
-// src/pages/Dashboard/Meal/DeleteMeal.jsx
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-console.log('DeleteMeal file loaded');
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useNotification } from "../../../../context/NotificationContext";
 
 const DeleteMeal = () => {
   const { mealId } = useParams();
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
+  const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(true);
 
-  const API_BASE_URL = 'http://localhost:5063/api/Meal';
+  const API_BASE_URL = "http://192.168.1.245:5063/api/Meal";
 
   useEffect(() => {
-    console.log('DeleteMeal mounted with mealId:', mealId);
-    const deleteMeal = async () => {
+    const fetchMeal = async () => {
       try {
-        setLoading(true);
-        const response = await axios.delete(`${API_BASE_URL}/Meal?mealId=${mealId}`, {
-          headers: { Accept: 'text/plain' },
-        });
-        console.log('DELETE Response:', response.status, response.data);
-        if (response.data.statusCode === 200) {
-          setSuccess('Meal deleted successfully!');
-          setTimeout(() => navigate('/dashboard'), 2000);
+        const response = await axios.get(
+          `${API_BASE_URL}/MealById?mealId=${mealId}`
+        );
+        if (response.data.statusCode === 200 && response.data.result) {
+          setMeal(response.data.result);
         } else {
-          setError(response.data.error || 'Failed to delete meal');
-          console.warn('DELETE Error:', response.data.error);
+          throw new Error("Meal not found");
         }
       } catch (err) {
-        setError('Error deleting meal: ' + err.message);
-        console.error('Delete Error:', err);
+        setError("Failed to load meal: " + err.message);
+        addNotification("Failed to load meal", "error");
       } finally {
         setLoading(false);
       }
     };
-    deleteMeal();
-  }, [mealId]);
+    fetchMeal();
+  }, [mealId, addNotification]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>;
-  if (success) return <div style={{ color: 'green' }}>{success}</div>;
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `${API_BASE_URL}/Meal?mealId=${mealId}`,
+        {
+          headers: { Accept: "text/plain" },
+        }
+      );
+      if (response.data.statusCode === 200) {
+        addNotification("Meal deleted successfully", "success");
+        setTimeout(() => navigate("/dashboard/meals"), 2000);
+      } else {
+        throw new Error(response.data.error || "Failed to delete meal");
+      }
+    } catch (err) {
+      setError("Failed to delete meal: " + err.message);
+      addNotification("Failed to delete meal: " + err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return <div>Preparing to delete meal...</div>; // Fallback UI
+  const handleCancel = () => {
+    navigate("/dashboard/meals");
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 max-w-md mx-auto">
+        <div className="flex justify-center">
+          <svg
+            className="animate-spin h-8 w-8 text-blue-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8h8a8 8 0 11-16 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 max-w-md mx-auto">
+        <div className="bg-red-100 text-red-700 p-4 rounded-lg">{error}</div>
+      </div>
+    );
+  }
+
+  if (showConfirm && meal) {
+    return (
+      <div className="p-6 max-w-md mx-auto bg-white shadow-md rounded">
+        <h2 className="text-xl font-bold mb-4">Confirm Delete Meal</h2>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete "{meal.name}"? This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={handleCancel}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+            aria-label="Cancel deletion"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            aria-label="Confirm deletion"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return null; // Handled by navigation
 };
 
 export default DeleteMeal;

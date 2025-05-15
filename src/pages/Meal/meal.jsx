@@ -5,6 +5,14 @@ import MealModal from "./MealModal/MealModal";
 const Meal = ({ meals }) => {
   const { addedMeals, addMeal, removeMeal } = useContext(MealsContext);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    quantity: "",
+    categoryId: "",
+    imageUrl: "",
+    description: "",
+  });
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -18,7 +26,19 @@ const Meal = ({ meals }) => {
             className="flex flex-col p-4 bg-white shadow-lg rounded-lg transition hover:shadow-xl cursor-pointer"
             onClick={() => setSelectedMeal(meal)}
           >
-            <img src={meal?.image} alt={meal?.name} className="w-full h-40 object-cover rounded-md" />
+            {/* Conditionally render the image if imageUrl is available */}
+            {meal?.imageUrl || formData.imageUrl ? (
+              <img 
+                src={meal?.imageUrl || formData.imageUrl} 
+                alt={meal?.name} 
+                className="w-full h-40 object-cover rounded-md" 
+              />
+            ) : (
+              <div className="w-full h-40 bg-gray-200 rounded-md flex justify-center items-center">
+                <span>No Image Available</span>
+              </div>
+            )}
+
             <div className="flex flex-col flex-1 justify-between mt-4">
               <p className="text-lg font-semibold">{meal?.name}</p>
               <p className="text-gray-600 text-sm">{meal?.description}</p>
@@ -55,6 +75,7 @@ const Meal = ({ meals }) => {
           addMeal={(meal) => addMeal(meal)}
           removeMeal={(id) => removeMeal(id)}
           quantity={addedMeals.find((m) => m?.id === selectedMeal?.id)?.quantity || 0}
+          imageUrl={selectedMeal?.imageUrl || formData.imageUrl}  
         />
       )}
     </div>

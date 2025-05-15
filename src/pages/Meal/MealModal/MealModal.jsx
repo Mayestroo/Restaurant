@@ -1,11 +1,20 @@
 import React from "react";
 
-const MealModal = ({ meal, onClose, addMeal, removeMeal, quantity }) => {
+const MealModal = ({ meal, onClose, addMeal, removeMeal, quantity, imageUrl }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#5D7FC1]/50 bg-opacity-50">
       <div className="bg-white p-5 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-xl font-bold">{meal?.name}</h2>
-        <img src={meal?.image} alt={meal?.name} className="w-full h-40 object-cover rounded-md my-3" />
+
+        {/* Render image based on passed imageUrl */}
+        {imageUrl ? (
+          <img src={imageUrl} alt={meal?.name} className="w-full h-40 object-cover rounded-md my-3" />
+        ) : (
+          <div className="w-full h-40 bg-gray-200 rounded-md flex justify-center items-center">
+            <span>No Image Available</span>
+          </div>
+        )}
+
         <p className="text-gray-600">{meal?.description}</p>
         <p className="text-lg font-bold mt-2">{meal?.price?.toLocaleString()} so'm</p>
 

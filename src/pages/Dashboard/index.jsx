@@ -13,7 +13,7 @@ import AddMeal from "./Meal/AddMeal";
 // import MealById from "./Meal/MealById";
 import Meals from "./Meal/Meals";
 // import DeleteMeal from "./Meal/DeleteMeal";
-import EditMeal from "./Meal/UpdateMeal";
+import EditMeal from "./Meal/EditMeal";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -65,7 +65,7 @@ const Dashboard = () => {
               </>
             }
           />
-          <Route path="meals" element={<Meals />} />
+          <Route path="meals" element={<Meals onSave={() => navigate("/dashboard")}/>} />
           <Route path="add-meal" element={<AddMeal />} />
           <Route
             path="edit-meal/:id"
