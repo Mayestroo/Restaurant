@@ -17,7 +17,7 @@ const AddUserForm = ({ onUserAdded }) => {
       .then(res => res.json())
       .then(data => setRoles(data.result?.data || []));
 
-    fetch('http://localhost:5225/api/Dashboard/GetAllPermissions?skip=0&take=10')
+    fetch('http://localhost:5225/api/Dashboard/GetAllPermissions?skip=0&take=100')
       .then(res => res.json())
       .then(data => {
         const perms = Array.isArray(data.result?.data) ? data.result.data : [];
