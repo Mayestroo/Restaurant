@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import { MealsContext } from "../../Layout/MealsContext";
+import { MealsContext } from "../MealsContext";
 import line from "../../../images/line.svg";
 import "./index.css";
-import { getOrder } from "../../Layout/Order";
+import { getOrder } from "../Order";
 
 const Aside = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
