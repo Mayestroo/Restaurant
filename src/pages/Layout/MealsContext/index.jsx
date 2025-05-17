@@ -1,8 +1,14 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-export const MealsContext = createContext();
+const MealsContext = createContext({
+  addedMeals: [],
+  addMeal: () => {},
+  removeMeal: () => {},
+  customerData: { name: "Ma'mirjon", tableNumber: 7 },
+});
 
-export const MealsProvider = ({ children }) => {
+
+const MealsProvider = ({ children }) => {
   const [addedMeals, setAddedMeals] = useState(() => {
     try {
       const savedMeals = localStorage.getItem('addedMeals');
@@ -74,3 +80,5 @@ export const MealsProvider = ({ children }) => {
     </MealsContext.Provider>
   );
 };
+
+export { MealsContext, MealsProvider };
