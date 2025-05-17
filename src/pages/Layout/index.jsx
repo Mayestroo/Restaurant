@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './navbar';
 import Types from '../Layout/Types/all';
 import Search from './search';
-import { Outlet } from 'react-router-dom';
 import Aside from './aside';
 import MealContainer from '../Layout/Meal/index';
 import { MealsProvider } from '../Layout/MealsContext';
@@ -38,9 +37,6 @@ const Layout = () => {
             <MealContainer selectedType={selectedType} searchQuery={searchQuery} />
           )}
         </div>
-        <main>
-          <Outlet />
-        </main>
         <div className="aside-in block">
           <Aside />
         </div>

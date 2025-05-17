@@ -26,7 +26,6 @@ const Meal = ({ meals }) => {
             className="flex flex-col p-4 bg-white shadow-lg rounded-lg transition hover:shadow-xl cursor-pointer"
             onClick={() => setSelectedMeal(meal)}
           >
-            {/* Conditionally render the image if imageUrl is available */}
             {meal?.imageUrl || formData.imageUrl ? (
               <img 
                 src={meal?.imageUrl || formData.imageUrl} 
