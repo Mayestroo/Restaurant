@@ -1,16 +1,15 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import LoginPage from './pages/Auth'
-import Dashboard from './pages/Dashboard'
-import PrivateRoute from './pages/Dashboard/PrivateRoute'
-import { ToastContainer } from 'react-toastify'
-import Waiter from './pages/Waiter'
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import LoginPage from './pages/Auth';
+import Dashboard from './pages/Dashboard';
+import PrivateRoute from './pages/Dashboard/PrivateRoute';
+import { ToastContainer } from 'react-toastify';
+import Waiter from './pages/Waiter';
 import connection from './pages/Waiter/Queue/Connection';
+import * as signalR from '@microsoft/signalr'; // <- MUHIM!
 
-const App = () =>
-  
+const App = () => {
   useEffect(() => {
     const startConnection = async () => {
       try {
@@ -26,25 +25,26 @@ const App = () =>
     };
 
     startConnection();
-
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route
-            path="/dashboard/*"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route path='/waiter' element={<Waiter />} />
-        </Routes>
-        <ToastContainer position='top-center' autoClose={3000} />
-      </BrowserRouter>
-    )
   }, []);
 
-export default App
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route
+          path="/dashboard/*"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path='/waiter' element={<Waiter />} />
+      </Routes>
+      <ToastContainer position='top-center' autoClose={3000} />
+    </BrowserRouter>
+  );
+};
+
+export default App;

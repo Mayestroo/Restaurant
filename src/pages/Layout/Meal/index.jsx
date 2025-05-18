@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import getMeal from './mealcrud/index';
-import Meal from './meal';
+import React, { useEffect, useState } from "react";
+import getMeal from "./mealcrud/index";
+import Meal from "./meal";
 
 const MealContainer = ({ selectedType, searchQuery }) => {
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem("access_token");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (selectedType) {
-      console.log('Fetching meals for type:', selectedType);
+      console.log("Fetching meals for type:", selectedType);
       getMeal(token, setMeals, setError, selectedType.id, null);
     }
   }, [selectedType, token]);
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (searchQuery.trim() === "") {
       setFilteredMeals(meals);
     } else {
       const lowerQuery = searchQuery.toLowerCase();

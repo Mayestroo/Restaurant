@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './navbar';
 import Types from '../Layout/Types/all';
 import Search from './search';
-import Aside from './aside';
+import Aside from './Aside';
 import MealContainer from '../Layout/Meal/index';
 import { MealsProvider } from '../Layout/MealsContext';
 
