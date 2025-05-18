@@ -1,6 +1,6 @@
 export default async function getMeal(token, setDatas, setError, categoryId, name) {
     try {
-      const url = 'http://192.168.1.245:5063/api/Meal/Meals';
+      const url = 'http://localhost:5063/api/Meal/Meals';
 
       const requestBody = {
         name: name,

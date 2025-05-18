@@ -1,10 +1,10 @@
-export async function getOrder(token, orderData, setDatas, setError, clearData) {
+export async function AddOrder(token, orderData, setDatas, setError, clearData) {
   try {
     if (!token) {
       throw new Error('Authentication token is missing');
     }
 
-    const response = await fetch('http://192.168.1.245:5063/api/Order/AddOrder', {
+    const response = await fetch('http://localhost:5063/api/Order/AddOrder', {
       method: 'POST',
       headers: {
         "Authorization": `Bearer ${token}`,

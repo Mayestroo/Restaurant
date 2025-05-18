@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { MealsContext } from "../../Layout/MealsContext";
+import { MealsContext } from "../MealsContext";
 import line from "../../../images/line.svg";
-import { getOrder } from "../../Layout/Order";
-import connection from "../../Waiter/Queue/Connection"; // Import SignalR connection
+import { AddOrder } from "../../Layout/Order";
 
 const Aside = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
@@ -21,9 +20,14 @@ const Aside = ({ showModal, setShowModal }) => {
 
   const sendOrderToBackend = async () => {
     const orderData = {
-      number: `#${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`, // Generate a unique order number
-      table: tableId,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      number: `#${Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, "0")}`,
+      tableId: tableId,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       status: "Faol",
       price: grandTotal.toLocaleString(),
       items: addedMeals.map((meal) => ({
@@ -40,17 +44,9 @@ const Aside = ({ showModal, setShowModal }) => {
     const token = "your-auth-token-here";
 
     try {
-      // Send to backend via existing getOrder (assuming it posts to API)
-      await getOrder(token, orderData, setDatas, setError, clearData);
+      await AddOrder(token, orderData, setDatas, setError, clearData);
 
-      // Start SignalR connection if not already started
-      if (connection.state === "Disconnected") {
-        await connection.start();
-      }
-
-      // Send order to SignalR hub
-      await connection.invoke("SendOrder", orderData);
-      setShowModal(false); // Close modal on success
+      setShowModal(false);
     } catch (err) {
       setError("Buyurtma yuborishda xatolik: " + err.message);
     }
