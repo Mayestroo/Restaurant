@@ -21,7 +21,7 @@ const Aside = ({ showModal, setShowModal }) => {
 
   const sendOrderToBackend = async () => {
     const orderData = {
-      number: `#${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`, // Generate a unique order number
+      number: `#${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`,
       table: tableId,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       status: "Faol",
@@ -37,20 +37,16 @@ const Aside = ({ showModal, setShowModal }) => {
       client: { tableNumber: tableId },
     };
 
-    const token = "your-auth-token-here";
+    const token = "";
 
     try {
-      // Send to backend via existing getOrder (assuming it posts to API)
       await getOrder(token, orderData, setDatas, setError, clearData);
-
-      // Start SignalR connection if not already started
       if (connection.state === "Disconnected") {
         await connection.start();
       }
 
-      // Send order to SignalR hub
       await connection.invoke("SendOrder", orderData);
-      setShowModal(false); // Close modal on success
+      setShowModal(false); 
     } catch (err) {
       setError("Buyurtma yuborishda xatolik: " + err.message);
     }

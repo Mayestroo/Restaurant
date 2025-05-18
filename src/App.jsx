@@ -16,14 +16,14 @@ const App = () =>
       try {
         if (connection.state === signalR.HubConnectionState.Disconnected) {
           await connection.start();
-          console.log('SignalR connected in App');
+          console.log('SignalR connected in App')
         } else {
-          console.log('SignalR already connecting/connected:', connection.state);
+          console.log('SignalR already connecting/connected:', connection.state)
         }
       } catch (err) {
-        console.error('SignalR connection error in App:', err);
+        console.error('SignalR connection error in App:', err)
       }
-    };
+    }
 
     startConnection();
 
