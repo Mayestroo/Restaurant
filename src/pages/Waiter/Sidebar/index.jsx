@@ -4,16 +4,6 @@ import { LayoutGrid, ShoppingCart, Settings, LogOut, X } from 'lucide-react';
 const Sidebar = ({ isOpen, onClose }) => {
   const [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-    connection.on('ReceiveOrder', (order) => {
-      setOrders(prev => [...prev, order]);
-    });
-
-    return () => {
-      connection.off('ReceiveOrder');
-    };
-  }, []);
-
   if (!isOpen) return null;
 
   const handleOverlayClick = (e) => {

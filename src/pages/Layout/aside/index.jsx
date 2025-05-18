@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
-import { MealsContext } from "../../Layout/MealsContext";
+import { MealsContext } from "../MealsContext";
 import line from "../../../images/line.svg";
-import { getOrder } from "../../Layout/Order";
-import connection from "../../Waiter/Queue/Connection"; // Import SignalR connection
+import { AddOrder } from "../../Layout/Order";
 
 const Aside = ({ showModal, setShowModal }) => {
   if (!showModal) return null;
@@ -21,9 +20,14 @@ const Aside = ({ showModal, setShowModal }) => {
 
   const sendOrderToBackend = async () => {
     const orderData = {
-      number: `#${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`,
-      table: tableId,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      number: `#${Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, "0")}`,
+      tableId: tableId,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       status: "Faol",
       price: grandTotal.toLocaleString(),
       items: addedMeals.map((meal) => ({
@@ -40,13 +44,9 @@ const Aside = ({ showModal, setShowModal }) => {
     const token = "";
 
     try {
-      await getOrder(token, orderData, setDatas, setError, clearData);
-      if (connection.state === "Disconnected") {
-        await connection.start();
-      }
+      await AddOrder(token, orderData, setDatas, setError, clearData);
 
-      await connection.invoke("SendOrder", orderData);
-      setShowModal(false); 
+      setShowModal(false);
     } catch (err) {
       setError("Buyurtma yuborishda xatolik: " + err.message);
     }
