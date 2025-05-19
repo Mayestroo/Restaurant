@@ -11,7 +11,7 @@ const UserList = () => {
   // Fetch all users
   const fetchUsers = () => {
     fetch(
-      `http://localhost:5225/api/Dashboard/GetAllUsers?skip=0&take=100&t=${Date.now()}`
+      `http://192.168.1.245:5225/api/Dashboard/GetAllUsers?skip=0&take=100&t=${Date.now()}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -27,7 +27,7 @@ const UserList = () => {
 
   // Fetch a user by ID (for verification/debugging)
   const getUserById = (userId) => {
-    fetch(`http://localhost:5225/api/Dashboard/GetUserById?userId=${userId}`)
+    fetch(`http://192.168.1.245:5225/api/Dashboard/GetUserById?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("User data for deletion check:", data); // Debugging log
@@ -45,7 +45,7 @@ const UserList = () => {
       return;
     }
 
-    fetch(`http://localhost:5225/api/Dashboard/RemoveUser?userId=${userId}`, {
+    fetch(`http://192.168.1.245:5225/api/Dashboard/RemoveUser?userId=${userId}`, {
       method: "DELETE",
     })
       .then((res) => {

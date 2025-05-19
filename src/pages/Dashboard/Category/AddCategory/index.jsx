@@ -13,7 +13,7 @@ const AddCategory = () => {
   useEffect(() => {
     if (isEdit) {
       fetch(
-        `http://localhost:5063/api/CategoryControlller/CategoryById?id=${id}`
+        `http://192.168.1.245:5063/api/CategoryControlller/CategoryById?id=${id}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -37,8 +37,8 @@ const AddCategory = () => {
 
     try {
       const url = isEdit
-        ? "http://localhost:5063/api/CategoryControlller/UpdateCategory"
-        : "http://localhost:5063/api/CategoryControlller/AddCategory";
+        ? "http://192.168.1.245:5063/api/CategoryControlller/UpdateCategory"
+        : "http://192.168.1.245:5063/api/CategoryControlller/AddCategory";
 
       const method = isEdit ? "PUT" : "POST";
 

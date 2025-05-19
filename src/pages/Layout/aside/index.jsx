@@ -41,10 +41,8 @@ const Aside = ({ showModal, setShowModal }) => {
       client: { tableNumber: tableId },
     };
 
-    const token = "";
-
     try {
-      await AddOrder(token, orderData, setDatas, setError, clearData);
+      await AddOrder(orderData, setDatas, setError, clearData);
 
       setShowModal(false);
     } catch (err) {

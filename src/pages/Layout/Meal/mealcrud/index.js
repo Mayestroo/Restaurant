@@ -1,6 +1,8 @@
+import refreshToken from "../../../../common"
+
 export default async function getMeal(token, setDatas, setError, categoryId, name) {
     try {
-      const url = 'http://localhost:5063/api/Meal/Meals';
+      const url = 'http://192.168.1.245:5063/api/Meal/Meals';
 
       const requestBody = {
         name: name,
@@ -18,6 +20,15 @@ export default async function getMeal(token, setDatas, setError, categoryId, nam
         },
         body: JSON.stringify(requestBody), 
       });
+
+      if (response.status === 401) { 
+      console.log("Token expired, refreshing...");
+      token = await refreshToken();
+      localStorage.setItem("authToken", token); 
+
+      return getMeal();
+    }
+
   
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

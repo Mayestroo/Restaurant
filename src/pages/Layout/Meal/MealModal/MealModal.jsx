@@ -6,7 +6,6 @@ const MealModal = ({ meal, onClose, addMeal, removeMeal, quantity, imageUrl }) =
       <div className="bg-white p-5 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-xl font-bold">{meal?.name}</h2>
 
-        {/* Render image based on passed imageUrl */}
         {imageUrl ? (
           <img src={imageUrl} alt={meal?.name} className="w-full h-40 object-cover rounded-md my-3" />
         ) : (

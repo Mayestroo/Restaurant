@@ -10,7 +10,7 @@ const Category = () => {
 
   const fetchCategories = () => {
     fetch(
-      `http://localhost:5063/api/CategoryControlller/AllCategories?skip=0&take=100&t=${Date.now()}`
+      `http://192.168.1.245:5063/api/CategoryControlller/AllCategories?skip=0&take=100&t=${Date.now()}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -26,7 +26,7 @@ const Category = () => {
 
   const removeCategory = (categoryId) => {
     fetch(
-      `http://localhost:5063/api/CategoryControlller/Category?categoryId=${categoryId}`,
+      `http://192.168.1.245:5063/api/CategoryControlller/Category?categoryId=${categoryId}`,
       {
         method: "DELETE",
       }

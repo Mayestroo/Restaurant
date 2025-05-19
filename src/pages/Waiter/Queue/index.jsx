@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import connection from "../../Waiter/Queue/Connection";
 import { getAllOrders } from "../GetAllOrders/index.js";
+import OrderModal from "./OrderModal/index.jsx";
 
-const Queue = () => {
+const Queue = ({ handleAcceptOrder }) => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const [datas, setDatas] = useState(null);
-  const token = "your-auth-token-here";
-  const [showModal, setShowModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fetchOrders = async () => {
     const orderData = {};
     try {
-      let res = await getAllOrders(token, orderData, setDatas, setError);
+      let res = await getAllOrders(orderData, setDatas, setError);
       setOrders(res);
-      setShowModal(false);
     } catch (err) {
       setError("Buyurtma olishda xatolik: " + err.message);
     }
   };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   useEffect(() => {
     const handleNewOrder = (newOrder) => {
@@ -27,7 +28,7 @@ const Queue = () => {
       setOrders((prev) => [...prev, newOrder]);
     };
 
-    connection.off("NewOrder"); // Remove previous listeners to avoid duplication
+    connection.off("NewOrder");
     connection.on("NewOrder", handleNewOrder);
 
     return () => {
@@ -43,11 +44,11 @@ const Queue = () => {
       );
     };
 
-    connection.off("RemoveOrder"); // Avvalgi listenerni olib tashlash
+    connection.off("RemoveOrder");
     connection.on("RemoveOrder", handleRemoveOrder);
 
     return () => {
-      connection.off("RemoveOrder", handleRemoveOrder); // Clean-up
+      connection.off("RemoveOrder", handleRemoveOrder);
     };
   }, []);
 
@@ -63,40 +64,10 @@ const Queue = () => {
     }
   }, [connection]);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const getStatusColor = (status) => {
     if (status === "Faol") return "text-green-500 bg-green-100";
     if (status === "Tugatilgan") return "text-red-500 bg-red-100";
     return "";
-  };
-
-  const handleAcceptOrder = async (orderId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:5063/api/Order/WaitorAcceptOrder?orderId=${orderId}`, // Using query parameter
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          // body: JSON.stringify({ orderId, waiterId }), // Uncomment if necessary
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Buyurtma qabul qilishda xatolik");
-      }
-      const data = await response.json();
-      console.log("Buyurtma qabul qilindi:", data);
-      //setOrders((prev) => prev.filter((order) => order.id !== orderId));
-      setShowModal(false);
-    } catch (error) {
-      console.error("Buyurtma qabul qilishda xatolik:", error);
-      setError("Buyurtma qabul qilishda xatolik: " + error.message);
-    }
   };
 
   return (
@@ -166,33 +137,7 @@ const Queue = () => {
         </div>
       </div>
 
-      {showModal && selectedOrder && (
-        <div className="fixed inset-0 bg-[#5D7FC1]/50 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h2 className="text-xl font-semibold mb-2">
-              Buyurtma Tafsilotlari
-            </h2>
-            <p>
-              <strong>Buyurtma raqami:</strong> {selectedOrder.orderNumber}
-            </p>
-            <p>
-              <strong>Stol raqami:</strong> {selectedOrder.tableId}
-            </p>
-            <p>
-              <strong>Umumiy narx:</strong> {selectedOrder.totalPrice}
-            </p>
-            <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md"
-              onClick={() => setShowModal(false)}
-            >
-              Yopish
-            </button>
-            <button onClick={() => handleAcceptOrder(selectedOrder.id)}>
-              Qabul qilish
-            </button>
-          </div>
-        </div>
-      )}
+      <OrderModal />
     </div>
   );
 };

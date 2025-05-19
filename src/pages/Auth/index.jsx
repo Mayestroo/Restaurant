@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode"; 
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function LoginPage() {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value.trim(), 
+      [e.target.name]: e.target.value.trim(),
     }));
   };
 
@@ -28,7 +29,7 @@ function LoginPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5106/api/Login/token",
+        "http://192.168.1.245:5106/api/Login/token",
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -37,11 +38,23 @@ function LoginPage() {
         throw new Error("Invalid credentials.");
       }
 
-      console.log("Login success:", response.data);
-      localStorage.setItem("token", response.data.result.access_token);
-      navigate("/dashboard"); 
+      const token = response.data.result.access_token;
+      localStorage.setItem("authToken", token); 
+      localStorage.setItem("refreshToken", response.data.result.refresh_token); 
+
+      const decodedToken = jwtDecode(token);
+      console.log("Decoded token:", decodedToken);
+      var roleId = decodedToken.roleId;
+      if (roleId == 4 || roleId == 1) {
+        navigate("/dashboard");
+      } else if (roleId == 2) {
+        navigate("/waiter");
+      } else {
+        setError("Invalid role.");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid username or password.");
+      const errorMessage = err.response?.data?.message || err.message || "An unexpected error occurred.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,7 @@ const EditCategory = ({ onSave }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:5063/api/CategoryControlller';
+  const API_BASE_URL = 'http://192.168.1.245:5063/api/CategoryControlller';
 
   useEffect(() => {
     console.log('EditCategory mounted with id:', id);

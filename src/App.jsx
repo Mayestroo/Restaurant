@@ -6,39 +6,15 @@ import Dashboard from './pages/Dashboard';
 import PrivateRoute from './pages/Dashboard/PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import Waiter from './pages/Waiter';
-import connection from './pages/Waiter/Queue/Connection';
-import * as signalR from '@microsoft/signalr'; // <- MUHIM!
 
 const App = () => {
-  useEffect(() => {
-    const startConnection = async () => {
-      try {
-        if (connection.state === signalR.HubConnectionState.Disconnected) {
-          await connection.start();
-          console.log('SignalR connected in App')
-        } else {
-          console.log('SignalR already connecting/connected:', connection.state)
-        }
-      } catch (err) {
-        console.error('SignalR connection error in App:', err)
-      }
-    }
-
-    startConnection();
-  }, []);
-
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<LoginPage />} />
         <Route
-          path="/dashboard/*"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
+          path="/dashboard" element={<Dashboard />}
         />
         <Route path='/waiter' element={<Waiter />} />
       </Routes>

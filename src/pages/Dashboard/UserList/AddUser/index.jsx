@@ -13,11 +13,11 @@ const AddUserForm = ({ onUserAdded }) => {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5225/api/Dashboard/AllRoles')
+    fetch('http://192.168.1.245:5225/api/Dashboard/AllRoles')
       .then(res => res.json())
       .then(data => setRoles(data.result?.data || []));
 
-    fetch('http://localhost:5225/api/Dashboard/GetAllPermissions?skip=0&take=100')
+    fetch('http://192.168.1.245:5225/api/Dashboard/GetAllPermissions?skip=0&take=100')
       .then(res => res.json())
       .then(data => {
         const perms = Array.isArray(data.result?.data) ? data.result.data : [];
@@ -42,7 +42,7 @@ const AddUserForm = ({ onUserAdded }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    fetch('http://localhost:5225/api/Dashboard/AddUser', {
+    fetch('http://192.168.1.245:5225/api/Dashboard/AddUser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

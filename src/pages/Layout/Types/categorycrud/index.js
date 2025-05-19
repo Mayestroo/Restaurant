@@ -1,6 +1,6 @@
 export async function getCategory(token, setDatas, setError) {
     try {
-      const response = await fetch('http://localhost:5063/api/CategoryControlller/AllCategories', {
+      const response = await fetch('http://192.168.1.245:5063/api/CategoryControlller/AllCategories', {
         method: 'GET',
         headers: {
           "Authorization": `Bearer ${token}`,

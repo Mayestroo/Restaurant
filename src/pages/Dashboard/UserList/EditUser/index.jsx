@@ -24,11 +24,11 @@ const EditUser = ({ onSave }) => {
     const fetchUserDetails = async () => {
       try {
         const [rolesRes, permsRes, userRes] = await Promise.all([
-          fetch("http://localhost:5225/api/Dashboard/AllRoles"),
+          fetch("http://192.168.1.245:5225/api/Dashboard/AllRoles"),
           fetch(
-            `http://localhost:5225/api/Dashboard/GetAllPermissions?userId=${id}&skip=0&take=100`
+            `http://192.168.1.245:5225/api/Dashboard/GetAllPermissions?userId=${id}&skip=0&take=100`
           ),
-          fetch(`http://localhost:5225/api/Dashboard/GetUserById?userId=${id}`),
+          fetch(`http://192.168.1.245:5225/api/Dashboard/GetUserById?userId=${id}`),
         ]);
 
         const rolesData = await rolesRes.json();
@@ -91,7 +91,7 @@ const EditUser = ({ onSave }) => {
         permissions: formData.permissions,
       };
 
-      const res = await fetch("http://localhost:5225/api/Dashboard/UpdateUser", {
+      const res = await fetch("http://192.168.1.245:5225/api/Dashboard/UpdateUser", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -11,7 +11,7 @@ const MealById = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:5063/api/Meal';
+  const API_BASE_URL = 'http://192.168.1.245:5063/api/Meal';
 
   useEffect(() => {
     console.log('MealById mounted with mealId:', mealId);

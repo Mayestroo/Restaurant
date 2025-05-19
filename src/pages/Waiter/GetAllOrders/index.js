@@ -1,18 +1,18 @@
-export const getAllOrders = async (token, orderData, setDatas, setError) => {
+export const getAllOrders = async (orderData, setDatas, setError) => {
   try {
+    const token = localStorage.getItem("authToken");
     if (!token) {
       throw new Error("Authentication token is missing");
     }
 
     const response = await fetch(
-      "http://localhost:5063/api/Order/ActiveOrders",
+      "http://192.168.1.245:5063/api/Order/ActiveOrders",
       {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-type": "application/json",
         },
-        // body: JSON.stringify(orderData),
       }
     );
     if (!response.ok) {
@@ -34,11 +34,6 @@ export const getAllOrders = async (token, orderData, setDatas, setError) => {
     const resultData = data.result?.data || data.data || data;
     setError(null);
     setDatas(resultData);
-    //alert("Order submitted successfully!");
-
-    // if (clearData) {
-    //   clearData();
-    // }
 
     return resultData;
   } catch (error) {
