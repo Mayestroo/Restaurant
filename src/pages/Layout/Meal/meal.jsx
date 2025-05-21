@@ -14,6 +14,14 @@ const Meal = ({ meals }) => {
     description: "",
   });
 
+  if (!meals || !Array.isArray(meals)) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        No meals available. Please try again later.
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {meals.map((meal) => {

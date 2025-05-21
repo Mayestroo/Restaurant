@@ -71,7 +71,7 @@ const Queue = ({ handleAcceptOrder }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex mx-auto">
       <div className="w-64 p-4 space-y-3">
         <div className="space-y-2">
           <button className="w-full text-left px-4 py-2 rounded-xl bg-blue-100 text-blue-600 font-medium">

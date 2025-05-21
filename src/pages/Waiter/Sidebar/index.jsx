@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LayoutGrid, ShoppingCart, Settings, LogOut, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const [orders, setOrders] = useState([]);
+  const [activeItem, setActiveItem] = useState('Menu'); 
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -12,6 +14,12 @@ const Sidebar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleItemClick = (label, path) => {
+    setActiveItem(label);
+    navigate(path);
+    onClose(); 
+  };
+
   return (
     <div
       id="sidebar-overlay"
@@ -19,8 +27,9 @@ const Sidebar = ({ isOpen, onClose }) => {
       className="fixed inset-0 bg-[#5D7FC1]/50 bg-opacity-30 z-40"
     >
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow transition-transform z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow transition-transform z-50 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center space-x-2">
@@ -31,7 +40,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             />
             <div>
               <p className="font-semibold text-sm">Ashurbek</p>
-              <p className="text-gray-400 text-xs">ofitsant</p>
+              <p className="text-gray-400 text-xs">Ofitsant</p>
             </div>
           </div>
           <button
@@ -43,9 +52,24 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         <nav className="mt-4 space-y-2 px-4">
-          <SidebarItem icon={<LayoutGrid />} label="Menu" />
-          <SidebarItem icon={<ShoppingCart />} label="Buyurtmalar" active />
-          <SidebarItem icon={<Settings />} label="Sozlamalar" />
+          <SidebarItem
+            icon={<LayoutGrid className="w-4 h-4" />}
+            label="Menu"
+            active={activeItem === 'Menu'}
+            onClick={() => handleItemClick('Menu', '/waiter')}
+          />
+          <SidebarItem
+            icon={<ShoppingCart className="w-4 h-4" />}
+            label="Buyurtmalar"
+            active={activeItem === 'Buyurtmalar'}
+            onClick={() => handleItemClick('Buyurtmalar', '/waiter/queue')}
+          />
+          <SidebarItem
+            icon={<Settings className="w-4 h-4" />}
+            label="Sozlamalar"
+            active={activeItem === 'Sozlamalar'}
+            onClick={() => handleItemClick('Sozlamalar', '/waiter/settings')}
+          />
         </nav>
 
         <div className="absolute bottom-4 left-0 w-full px-4">
@@ -59,14 +83,17 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
-const SidebarItem = ({ icon, label, active = false }) => (
+const SidebarItem = ({ icon, label, active = false, onClick }) => (
   <div
-    className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer ${active ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 text-black'
-      }`}
+    onClick={onClick}
+    className={`flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer ${
+      active ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 text-black'
+    }`}
   >
     <div
-      className={`w-8 h-8 flex items-center justify-center rounded-full ${active ? 'bg-blue-600 text-white' : 'bg-gray-200'
-        }`}
+      className={`w-8 h-8 flex items-center justify-center rounded-full ${
+        active ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+      }`}
     >
       {icon}
     </div>
