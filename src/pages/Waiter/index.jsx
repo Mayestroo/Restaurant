@@ -1,23 +1,20 @@
-import React, { useState } from 'react'
-import Navbar from '../Waiter/Navbar/index'
-import Sidebar from './Sidebar';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Queue from './Queue';
+import Navbar from './Navbar/index';
+import Sidebar from './Sidebar';
 
-const Waiter = ({ children }) => {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+const Waiter = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    return (
-        <div>
-            <Navbar onMenuClick={() => setSidebarOpen(true)} />
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            <main className="ml-0 md:ml-64 transition-all duration-300">
-                {children}
-                <Outlet />
-            </main>
-            <Queue />
-        </div>
-    )
-}
+  return (
+    <div>
+      <Navbar onMenuClick={() => setSidebarOpen(true)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+};
 
-export default Waiter
+export default Waiter;
